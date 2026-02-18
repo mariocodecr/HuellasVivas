@@ -222,7 +222,7 @@ The API will be available at `http://localhost:4000`.
 
 ## 🤝 Contributing
 
-We welcome contributions. Please read **[CONTRIBUTING guide](./CONTRIBUTING.md)** for:
+We welcome contributions. Please read **[CONTRIBUTING guide](./docs/CONTRIBUTING.md)** for:
 
 - Detailed setup and run instructions
 - Code style and project conventions
