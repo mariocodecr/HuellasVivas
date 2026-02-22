@@ -2,46 +2,71 @@
 
 ## Description
 
-Please include a clear and concise description of the changes.
+<!-- Clear and concise description of what this PR does and why. -->
 
-What does this PR do?
-Why is this change needed?
+**What does this PR do?**
+
+**Why is this change needed?**
+
+Closes #<!-- issue number -->
 
 ---
 
 ## Type of Change
 
-Please check the relevant option:
-
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Refactor
-- [ ] Documentation update
-- [ ] Other
+- [ ] `feat` — New feature
+- [ ] `fix` — Bug fix
+- [ ] `refactor` — Code restructuring (no behavior change)
+- [ ] `docs` — Documentation only
+- [ ] `test` — Tests only
+- [ ] `chore` — Tooling, dependencies, config
 
 ---
 
 ## How Has This Been Tested?
 
-Describe how you tested your changes:
+- [ ] Unit tests added / updated
+- [ ] Tested locally with `npm run start:dev`
+- [ ] Tested endpoint manually via Swagger (`/api/docs`) or Postman
 
-- Manual testing
-- Screenshots (if UI changes)
-- Steps to reproduce
+Steps to reproduce / test:
+
+1.
+2.
+3.
 
 ---
 
-## Checklist
+## CI Checks
 
-Before submitting, please confirm:
+All of the following run automatically on every PR. Do not merge if any are failing.
 
-- [ ] My code follows the project style guidelines
-- [ ] I tested my changes locally
-- [ ] I did not break existing functionality
-- [ ] I updated documentation if necessary
+| Check | What it validates |
+|---|---|
+| 🔐 Secret Scan | No API keys, tokens, or private keys in the diff |
+| 🎨 Lint — Frontend | ESLint + TypeScript type check |
+| 🎨 Lint — Backend | ESLint + TypeScript type check |
+| 🧪 Tests — Backend | All unit tests pass, coverage thresholds met |
+| 🏗️ Build — Frontend | Next.js compiles without errors |
+| 🏗️ Build — Backend | NestJS compiles without errors |
+| 📝 Commit Messages | Conventional Commits format enforced |
+
+---
+
+## Author Checklist
+
+Before requesting a review, confirm:
+
+- [ ] Commits follow [Conventional Commits](../CONTRIBUTING.md#commit-messages) (`feat(scope): description`)
+- [ ] No `.env` files or real credentials committed
+- [ ] All new endpoints have Swagger decorators (`@ApiTags`, `@ApiOperation`, `@ApiResponse`)
+- [ ] New business logic has unit tests in a `.spec.ts` file
+- [ ] Ran `npm run lint` and `npm run test` locally — both pass
+- [ ] Response DTOs do not expose `passwordHash` or `encryptedSecretKey`
+- [ ] Code follows the standards in [`backend/docs/standards/`](../backend/docs/standards/)
 
 ---
 
 ## Screenshots (if applicable)
 
-Add screenshots here if the UI was modified.
+<!-- Add screenshots for UI changes, or Swagger screenshots for new endpoints. -->

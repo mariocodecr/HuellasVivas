@@ -1,0 +1,86 @@
+# Gitleaks configuration for Huellas Vivas
+# Docs: https://github.com/gitleaks/gitleaks
+
+title = "Huellas Vivas — Secret Detection Rules"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Extend the default ruleset — all standard patterns (AWS, GCP, Stripe, etc.)
+# are inherited from here. We only add project-specific rules below.
+# ─────────────────────────────────────────────────────────────────────────────
+[extend]
+useDefault = true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Custom rules — project specific
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Stellar secret keys always start with 'S' and are exactly 56 uppercase
+# alphanumeric characters (Base32 encoding).
+[[rules]]
+id          = "stellar-secret-key"
+description = "Stellar secret key (starts with S, 56 chars)"
+regex       = '''(?i)(stellar[_-]?(secret|private)[_-]?key\s*[:=]\s*|secret\s*[:=]\s*)['\"]?S[A-Z2-7]{55}['\"]?'''
+tags        = ["stellar", "blockchain", "key"]
+
+[[rules]]
+id          = "stellar-secret-key-bare"
+description = "Bare Stellar secret key value"
+regex       = '''['\"]S[A-Z2-7]{55}['\"]'''
+tags        = ["stellar", "blockchain", "key"]
+
+# Supabase service role keys contain a specific JWT-like structure
+[[rules]]
+id          = "supabase-service-role"
+description = "Supabase service role key"
+regex       = '''(?i)supabase[_-]?service[_-]?role[_-]?key\s*[:=]\s*['\"]?eyJ[A-Za-z0-9._-]+['\"]?'''
+tags        = ["supabase", "database"]
+
+# JWT private key (PEM format) should never appear in code
+[[rules]]
+id          = "jwt-private-key-pem"
+description = "JWT RS256 private key PEM block"
+regex       = '''-----BEGIN (RSA |EC )?PRIVATE KEY-----'''
+tags        = ["jwt", "key", "auth"]
+
+# Wallet encryption key — 64 hex chars
+[[rules]]
+id          = "wallet-encryption-key"
+description = "AES-256 wallet encryption key (64 hex chars)"
+regex       = '''(?i)wallet[_-]?encryption[_-]?key\s*[:=]\s*['\"]?[0-9a-fA-F]{64}['\"]?'''
+tags        = ["wallet", "encryption", "stellar"]
+
+# Trustless Work API key
+[[rules]]
+id          = "trustless-work-api-key"
+description = "Trustless Work API key"
+regex       = '''(?i)trustless[_-]?work[_-]?api[_-]?key\s*[:=]\s*['\"]?[A-Za-z0-9\-_]{20,}['\"]?'''
+tags        = ["trustless-work", "blockchain"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Allowlist — paths and patterns that should never be flagged
+# ─────────────────────────────────────────────────────────────────────────────
+[allowlist]
+description = "Global allowlist"
+
+# Ignore example and test files — they use obviously fake placeholder values
+paths = [
+  '''.env\.example$''',
+  '''\.env\.example$''',
+  '''__tests__''',
+  '''__stubs__''',
+  '''\.spec\.ts$''',
+  '''\.test\.ts$''',
+  '''CONTRIBUTING\.md$''',
+  '''README\.md$''',
+  '''docs/''',
+]
+
+# Common placeholder patterns used in examples and docs
+regexes = [
+  '''your[_-]?(secret|key|token|password)''',
+  '''<(your|my|the)[_-]?(key|token|secret)>''',
+  '''example[_-]?(key|token|secret)''',
+  '''REPLACE[_-]?ME''',
+  # Stellar public keys (G...) are safe to commit — only secret keys (S...) are sensitive
+  '''G[A-Z2-7]{55}''',
+]
