@@ -1,29 +1,19 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
-export class SupabaseService implements OnModuleInit {
-  private readonly logger = new Logger(SupabaseService.name);
-  private supabaseClient: SupabaseClient;
+export class SupabaseService {
+  readonly client: SupabaseClient;
+  readonly adminClient: SupabaseClient;
 
-  constructor(private readonly configService: ConfigService) {}
-
-  onModuleInit() {
-    const supabaseUrl = this.configService.get<string>('supabase.url');
-    const supabaseKey = this.configService.get<string>(
-      'supabase.serviceRoleKey',
-    );
-
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase configuration is missing');
-    }
-
-    this.supabaseClient = createClient(supabaseUrl, supabaseKey);
-    this.logger.log('Supabase client initialized');
-  }
-
-  get client(): SupabaseClient {
-    return this.supabaseClient;
+  constructor(private readonly config: ConfigService) {
+    const url = this.config.getOrThrow<string>('supabase.url');
+    const anon = this.config.getOrThrow<string>('supabase.anonKey');
+    const svc = this.config.getOrThrow<string>('supabase.serviceRoleKey');
+    this.client = createClient(url, anon);
+    this.adminClient = createClient(url, svc, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
   }
 }

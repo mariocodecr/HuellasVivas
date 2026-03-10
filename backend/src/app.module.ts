@@ -9,7 +9,6 @@ import trustlessWorkConfig from './config/trustless-work.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { CategoriesModule } from './modules/categories/categories.module';
       ],
     }),
     DatabaseModule,
-    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
