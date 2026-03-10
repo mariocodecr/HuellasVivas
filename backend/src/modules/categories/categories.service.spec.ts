@@ -56,4 +56,20 @@ describe('CategoriesService', () => {
       expect(category.label).toBe(mockCategories[index].label);
     });
   });
+
+  it('should return empty array when repository returns empty result', async () => {
+    jest.spyOn(repository, 'findAll').mockResolvedValue([]);
+
+    const result = await service.findAll();
+
+    expect(result).toEqual([]);
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('should propagate repository errors', async () => {
+    const mockError = new Error('Database error');
+    jest.spyOn(repository, 'findAll').mockRejectedValue(mockError);
+
+    await expect(service.findAll()).rejects.toThrow(mockError);
+  });
 });
